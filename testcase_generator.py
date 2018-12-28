@@ -1,4 +1,9 @@
+#known bug: in a nested block, cannot use sets because { triggers the func
+#simplify it and preferably eliminate func
 #yet to handle conditions
+
+#thecase can be a condition too.
+
 def prereq():
 	pass
 
@@ -7,15 +12,33 @@ lwr = lower = ascii_lowercase; upr = upper = ascii_uppercase; ltrs = letters = a
 import random
 alphanum = letters+digits
 
+def func(statement):
+	'''return the list statement.split(";") but guarding those within {}'''
+	inblock = False
+	#print(f"func received this: {statement}")
+	previ = 0
+	for i in range(len(statement)):
+		if statement[i]==";":
+			#print(f"func sending this: {statement[previ:i]}")
+			yield(statement[previ:i])
+			previ = i+1
+		elif statement[i]=="{":
+			inblock = True
+			#print(f"func sending this last in a nested: {statement[previ:]}")
+			yield(statement[previ:])
+			return
+
+
 def tcgen(statements, theoutput, condn=None):
 	f = open(theoutput, "w")
-	#print(statements)
+	##print(statements)
 	for statement in statements:
 		main(statement, condn, f)
 	f.close()
 
 
 def main(statement, condn, f):
+	#print(f"main received this: {statement}")
 	if (statement == "" or statement[0]=="#"):
 		return
 	commented = False
@@ -32,7 +55,7 @@ def main(statement, condn, f):
 		statement = statement[8:]
 		pt = statement.index("{")
 		thestatement = [statement[:pt], statement[pt:]]
-	#nested statement should be of the form>>>nested$$(10, "a"){st1;st2;st3}
+	#nested statement should be of the form>>>nested$$(10, "a"){st1;st2;st3;}
 	#last statement must not precede a semicolon.
 	thecase, theend = eval(thestatement[0])
 	if commented:
@@ -40,25 +63,26 @@ def main(statement, condn, f):
 		if "{" in thestatement:
 			raise BaseException("Nesting not allowed in commented statements.")
 
-	for case in range(thecase):	
+	while thecase if type(thecase)==int else eval(thecase):
+		if type(thecase)==int:
+			#print(thecase)
+			thecase-=1	
 		if thestatement[1][0]=="{" and thestatement[1][-1]=="}":
-			rstatements = thestatement[1][1:-1].split(";")
-			#statements = statements.replace(" ","") //no ntead already done
-			#statements = statements.split("\n") //split by ; here
-			if "end" in rstatements:
-				raise BaseException("end not allowed in nested statements")
+			rstatements = func(thestatement[1][1:-1]) #split(";") but shielding those withing {}
+			##print(rstatements)
 			for rstatement in rstatements:
+					#print(f"received this from func: {rstatement}")
 					main(rstatement, condn, f)
 			f.write(theend)
 			continue
 
-
+		#print("here",thestatement)
 		thetype = thestatement[1]
 		thevar = thestatement[2]
 		thedomain = thestatement[3]
 		if thetype=="string":
 			thedomain = eval(thedomain)
-			# print(thedomain, type(thedomain[0]), type(thedomain[1]))
+			# #print(thedomain, type(thedomain[0]), type(thedomain[1]))
 			thelength = thedomain[1]
 			thedomain = thedomain[0]
 			if type(thedomain)==set:
@@ -83,11 +107,11 @@ def main(statement, condn, f):
 		
 		if commented:
 			continue #don't write it to file
-
 		f.write(str(theval)) #use random.sample when you are making it smart and efficient.
 		f.write(theend)
+	return
 
-def driver(ipfile, condn, testcases):
+def driver(ipfile, testcases, condn = None):
 	prereq()
 	with open(ipfile) as ip:
 		statements = ip.read()
@@ -101,27 +125,27 @@ def driver(ipfile, condn, testcases):
 		#statement = statements[j]
 		for k, v in MACRO.items():
 			if k in statements[j]:
-				#print(k, v, statements[j])
+				##print(k, v, statements[j])
 				statements[j] = statements[j].replace(k, v)
 
 		if statements[j][:5].upper() == "MACRO":
 			MACRO[statements[j][:6]] = statements[j][8:]
 			del statements[j]
 			continue
-	#print(statements)
+	##print(statements)
 	tcgen(statements, testcases, condn)
 
 
 if __name__=="__main__":
-	ipfile = input("Enter the absolute location of input format file: ")
+	ipfile = input("Enter the location of input format file: ") or r"./thein.txt"
 	if ipfile[0]==ipfile[-1]=='"':
 		ipfile=ipfile[1:-1]
 	condn = None#condn =  input("Enter constraints(if any) imposed on the testcases: ")
 	
-	testcases = input("Enter the location of the testcases file to be built: ")
+	testcases = input("Enter the location of the testcases file to be built: ") or r"./theout.txt"
 	if testcases[0]==testcases[-1]=='"':
 		testcases=testcases[1:-1]
-	driver(ipfile, condn, testcases)
+	driver(ipfile, testcases)
 
 
 # This code has been found to work correctly on the following cases:
@@ -155,6 +179,26 @@ if __name__=="__main__":
 # MACRO0$${(1, "\n")$$int$$l$$MACRO1(1, "\n")$$string$$s$$(lwr, l)}
 # MACRO1$$range(1, 10**4);
 
+# (1, "\n")$$int$$t$$range(1, 10**2)
+# nested$$(t, "")MACRO0
+# MACRO0$${(1, "\n")$$int$$l$$range(1, 10**3); (1, "\n")$$string$$s$$(lwr, l); }
+
+# (1, "")$$int$$a$$range(1, 100)
+# \n 
+# nested$$(a, "\n"){MACRO2}
+# MACRO2$$(1, "")$$int$$b$$range(1, 10**3+1); \n; nested$$(b, " "){MACRO1}
+# MACRO1$$:(1, "")$$int$$c$$range(11):;:(1, "")$$char$$d$$lwr:;(1, "")$$string$$e$$({d}, c)
+# #a is no of testcases. MACRO1 is a part of string(like "gggg"). length of part is c.
+# #there are b parts each with different length
+
+# (1, "")$$int$$a$$range(1, 100)
+# \n 
+# nested$$(a, "\n"){MACRO2}
+# MACRO2$$(1, "")$$int$$b$$range(1, 10**3+1); \n; nested$$("b>0", " "){MACRO1}
+# MACRO1$$:(1, "")$$int$$c$$range(1, 11):;:(1,"")$$int$$b$$b-c:;:(1, "")$$char$$d$$lwr:;(min(c, b+c), "")$$char$$e$$d;
+# #a is no of testcases. MACRO1 is a part of string(like "gggg"). length of part is c. the total string length is b.
+
+
 
 # the single hashes are context, the double hashes consists of actually archived code.
 	# if (statement == "" or statement[0]=="#"):
@@ -167,7 +211,7 @@ if __name__=="__main__":
 	# # 	if set(statement).issubset(set(alphanum).union({'=', '+', '-', '*', '/', 'e'})):
 	# # 		exec(statement, globals())
 	# # 	else:
-	# # 		print(f"There's something wrong with one of your comment statements {statement}")
+	# # 		#print(f"There's something wrong with one of your comment statements {statement}")
 	# # 		assert 1==0
 	# # 	return	
 	# commented = False
