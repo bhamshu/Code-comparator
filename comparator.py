@@ -18,6 +18,7 @@ def compare(thepath,args):
 	for j in range(l):
 		if nd>3:
 			print("At least three points of difference have been reported. First address those please. ")
+			break
 		g = [f[i][j] for i in range(len(args))]
 		if len(set(g))!=1:
 			nd+=1
