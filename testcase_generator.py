@@ -36,8 +36,18 @@ def tcgen(statements, theoutput, condn=None):
 		main(statement, condn, f)
 	f.close()
 
+def handle(f, arg, end = "\n"):
+	f.write(str(arg))
+	f.write(end)
 
 def main(statement, condn, f):
+	if (statement[:8]=="script$$"):
+		#print(statement)
+		globals()["f"]=f
+		#print(globals())
+		exec(statement[8:], globals())
+		#print(globals())
+		return
 	#print(f"main received this: {statement}")
 	if (statement == "" or statement[0]=="#"):
 		return
@@ -115,13 +125,28 @@ def driver(ipfile, testcases, condn = None):
 	prereq()
 	with open(ipfile) as ip:
 		statements = ip.read()
-	statements = statements.replace(" ","")
 	statements = statements.split("\n")
 	if "end" in statements:
 		statements = statements[:statements.index("end")]
 	#only 10 macros (macro0, ..., macro9) are allowed.
 	MACRO = {}
+	inscript=False
 	for j in range(len(statements)-1, -1, -1):
+		if statements[j][:8]=="$$script":#traversing it backwards
+			inscript = j
+			pass
+		elif statements[j][:8]=="script$$":
+			statements[j] = '\n'.join(statements[j:inscript])
+			del statements[j+1:inscript+1]
+			inscript = False
+			statements[j] = statements[j].replace("print(", "handle(f, ")
+			#print("d", statements[j])
+			pass
+		elif inscript!=False:
+			pass
+		else:
+			statements[j] = statements[j].replace(" ","")
+
 		#statement = statements[j]
 		for k, v in MACRO.items():
 			if k in statements[j]:
@@ -142,7 +167,7 @@ if __name__=="__main__":
 		ipfile=ipfile[1:-1]
 	condn = None#condn =  input("Enter constraints(if any) imposed on the testcases: ")
 	
-	testcases = input("Enter the location of the testcases file to be built: ") or r"./theout.txt"
+	testcases = input("Enter the location of the testcases file to be built: ") or r"./thecases.txt"
 	if testcases[0]==testcases[-1]=='"':
 		testcases=testcases[1:-1]
 	driver(ipfile, testcases)

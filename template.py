@@ -1,5 +1,5 @@
-def buildtemplate(mode = "noob"):
-	f = open("./thein.txt", "w")
+def buildtemplate(thepath = ".", mode = "noob"):
+	f = open(thepath +"/"+"thein.txt", "w")
 	if mode == "noob":
 		f.write("#Scroll to the end of the file if you don't know what this means.\n")
 
@@ -27,7 +27,22 @@ def buildtemplate(mode = "noob"):
 			the above statement with 1 instead of 0 in the start
 			>>> \\n
 			simply will f.write an endline
-			
+			The following is the way to execute scripts in your input format. Greatly simplifies the things. Simply "print" what you want to be written in your testcases file.
+			script$$
+			import random
+
+			c=''.join(random.sample(lwr, 26))
+			b = random.randint(1, MACRO1)
+			print(b)
+			print(c)
+			for j in range(b-1):
+				s = ''.join(random.sample(lwr, random.randint(1,26)))
+				print(s, end=" ")
+			s = ''.join(random.sample(lwr, random.randint(1,26)))
+			print(s)
+
+			$$script
+			MACRO1$$10
 			'''.replace("\t", ""))
 	f.close()
 
