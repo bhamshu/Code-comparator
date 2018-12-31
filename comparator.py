@@ -23,4 +23,6 @@ def compare(thepath,args):
 		if len(set(g))!=1:
 			nd+=1
 			print(f"A point of difference found in sentence {j+1}.")
-			
+		if(nd==0):	 
+			print("Congrats! The outputs are same for all the files. But be cautious, there still might be some testcase out there for which the codes have different outputs.")	
+			print("Often, running it again helps.")
