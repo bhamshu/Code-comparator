@@ -58,6 +58,18 @@ def main():
 		elif lang == "py":
 			com = "py"
 			os.system(f"{com} {thefile} <{testcases}> out{thefile[:-len(lang)]}txt")
+		elif lang == "java":
+			com = "javac"
+			#print(f"{com} {thefile} & java {thefile[:-len(lang)-1]} <{testcases}> out{thefile[:-len(lang)]}txt")
+			os.system(f"{com} {thefile} & java {thefile[:-len(lang)-1]} <{testcases}> out{thefile[:-len(lang)]}txt")
+			def deleteclassfiles():
+				# print(projectdir, projectdir[3][-5:])
+				# cfil = [f for f in projectdir if os.path.isfile(f) if f[-5:]=="class"]
+				# print(cfil)
+				# for i in cfil:
+					# os.system(f"del {i}")
+				os.system(f"del {thefile[:-len(lang)]}class & del {thefile[:-len(lang)-1]}$FastReader.class")
+			deleteclassfiles()
 
 	from comparator import compare
 	compare(projectdirpath, ["out"+thefile[:-len(  thefile[::-1][:thefile[::-1].index(".")][::-1]  )]+"txt" for thefile in files])
