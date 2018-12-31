@@ -42,10 +42,20 @@ def handle(f, arg, end = "\n"):
 
 def main(statement, condn, f):
 	if (statement[:8]=="script$$"):
+		statement = statement[8:]
+		thecase, theend = 1, ""
+		if "$$" in statement:
+			ind = statement.index("$$")
+			tup = statement[:ind]
+			statement = statement[ind+2:]
+			thecase, theend = eval(tup)
+			print(f"thecase {thecase} end {theend}")
 		#print(statement)
 		globals()["f"]=f
 		#print(globals())
-		exec(statement[8:], globals())
+		for i in range(thecase):
+			exec(statement, globals())
+			f.write(theend)
 		#print(globals())
 		return
 	#print(f"main received this: {statement}")

@@ -4,7 +4,7 @@ def buildtemplate(thepath = ".", mode = "noob"):
 		f.write("#Scroll to the end of the file if you don't know what this means.\n")
 
 	from string import ascii_lowercase as lwr
-	for i in lwr:
+	for i in lwr[:3]:
 		f.write(f'(1, "")$$int$${i}$$range(10, 15)\n')
 
 	if mode == "noob":
@@ -28,7 +28,8 @@ def buildtemplate(thepath = ".", mode = "noob"):
 			>>> \\n
 			simply will f.write an endline
 			The following is the way to execute scripts in your input format. Greatly simplifies the things. Simply "print" what you want to be written in your testcases file.
-			script$$
+			script$$(1, "")$$
+			#The (5, "\n")$$  could have been omitted in the above statement. That's (thecase=1, theend = ""). Repeat this script thecase number of times and then print theend after each repetition. 
 			import random
 
 			c=''.join(random.sample(lwr, 26))
