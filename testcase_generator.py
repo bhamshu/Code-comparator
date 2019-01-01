@@ -1,5 +1,7 @@
 #known bug: in a nested block, cannot use sets because { triggers the func
 #simplify it and preferably eliminate func
+####ohhh i discovered this accidently but we can use tuples instead of sets. works fine. yeye
+
 #yet to handle conditions
 
 #thecase can be a condition too.
@@ -41,6 +43,7 @@ def handle(f, arg, end = "\n"):
 	f.write(end)
 
 def main(statement, condn, f):
+	#print(f"main received this: {statement}")
 	if (statement[:8]=="script$$"):
 		statement = statement[8:]
 		thecase, theend = 1, ""
@@ -58,7 +61,6 @@ def main(statement, condn, f):
 			f.write(theend)
 		#print(globals())
 		return
-	#print(f"main received this: {statement}")
 	if (statement == "" or statement[0]=="#"):
 		return
 	commented = False
@@ -156,6 +158,7 @@ def driver(ipfile, testcases, condn = None):
 			pass
 		else:
 			statements[j] = statements[j].replace(" ","")
+			statements[j] = statements[j].replace("$space"," ")
 
 		#statement = statements[j]
 		for k, v in MACRO.items():
@@ -204,14 +207,14 @@ if __name__=="__main__":
 #\n
 #:(1, "")$$int$$b$$10:
 #(a, "\n")$$string$$c$$({"a", "b"}, random.randint(1, b))
-#nested$$(10, "a\n"){(1, "ADS")$$char$$f$$digits}
+#nested$$(10, "a\n"){(1, "ADS")$$char$$f$$digits;}
 
 # 1, "\n")$$int$$t$$range(1, 10**2)
-# nested$$(t, ""){(1, "\n")$$int$$l$$range(1, 10**4); (1, "\n")$$string$$s$$(lwr, l)}
+# nested$$(t, ""){(1, "\n")$$int$$l$$range(1, 10**4); (1, "\n")$$string$$s$$(lwr, l);}
 
 # (1, "\n")$$int$$t$$range(1, 10**2)
 # nested$$(t, "")MACRO0
-# MACRO0$${(1, "\n")$$int$$l$$MACRO1(1, "\n")$$string$$s$$(lwr, l)}
+# MACRO0$${(1, "\n")$$int$$l$$MACRO1(1, "\n")$$string$$s$$(lwr, l);}
 # MACRO1$$range(1, 10**4);
 
 # (1, "\n")$$int$$t$$range(1, 10**2)

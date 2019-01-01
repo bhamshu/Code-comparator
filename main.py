@@ -50,7 +50,9 @@ def main():
 				com = "g++"
 			elif lang == "c":
 				com = "gcc"
-			delet = " " or "&&del temporaryexecutable.exe"
+			#don't skip deleting! it won't work correctly else. if the compiling is taking too much time, make ad hoc edits
+			delet ="	&&del temporaryexecutable.exe"
+
 			built = f"{com} -o temporaryexecutable {thefile} && "
 			if "temporaryexecutable.exe" in os.listdir(projectdirpath):
 				built = ""
@@ -72,7 +74,13 @@ def main():
 			deleteclassfiles()
 
 	from comparator import compare
-	compare(projectdirpath, ["out"+thefile[:-len(  thefile[::-1][:thefile[::-1].index(".")][::-1]  )]+"txt" for thefile in files])
+	nd, ls, eqlen = compare(projectdirpath, ["out"+thefile[:-len(  thefile[::-1][:thefile[::-1].index(".")][::-1]  )]+"txt" for thefile in files])
+	if nd == 0:
+		print("Congrats, all the files match. However, that doesn't necessarily means that the codes will always produce same output for same input. Run again for more confidence.")
+	else:
+		print(f"Points of difference found in statements {[i+1 for i in ls]}.")
+	if not eqlen:
+		print("Not all output files have same number of lines.")
 
 if __name__=="__main__":
 	main()

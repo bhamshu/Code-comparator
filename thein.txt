@@ -2,29 +2,6 @@
 (1, "")$$int$$a$$range(10, 15)
 (1, "")$$int$$b$$range(10, 15)
 (1, "")$$int$$c$$range(10, 15)
-(1, "")$$int$$d$$range(10, 15)
-(1, "")$$int$$e$$range(10, 15)
-(1, "")$$int$$f$$range(10, 15)
-(1, "")$$int$$g$$range(10, 15)
-(1, "")$$int$$h$$range(10, 15)
-(1, "")$$int$$i$$range(10, 15)
-(1, "")$$int$$j$$range(10, 15)
-(1, "")$$int$$k$$range(10, 15)
-(1, "")$$int$$l$$range(10, 15)
-(1, "")$$int$$m$$range(10, 15)
-(1, "")$$int$$n$$range(10, 15)
-(1, "")$$int$$o$$range(10, 15)
-(1, "")$$int$$p$$range(10, 15)
-(1, "")$$int$$q$$range(10, 15)
-(1, "")$$int$$r$$range(10, 15)
-(1, "")$$int$$s$$range(10, 15)
-(1, "")$$int$$t$$range(10, 15)
-(1, "")$$int$$u$$range(10, 15)
-(1, "")$$int$$v$$range(10, 15)
-(1, "")$$int$$w$$range(10, 15)
-(1, "")$$int$$x$$range(10, 15)
-(1, "")$$int$$y$$range(10, 15)
-(1, "")$$int$$z$$range(10, 15)
 #this self referential statement might as well not exist because it starts with a hash symbol
 #this is a comment>>> :(1, "")$$int$$pi$$3.14:>>>because it is flanked by colons. This will be evaluated (for further use, maybe) but not f.writeed
 #this is a normal statement>>> (a, "\n")$$char$$c$$lwr
@@ -43,7 +20,9 @@ the above statement with 1 instead of 0 in the start
 >>> \n
 simply will f.write an endline
 The following is the way to execute scripts in your input format. Greatly simplifies the things. Simply "print" what you want to be written in your testcases file.
-script$$
+script$$(1, "")$$
+#The (5, "
+")$$  could have been omitted in the above statement. That's (thecase=1, theend = ""). Repeat this script thecase number of times and then print theend after each repetition. 
 import random
 
 c=''.join(random.sample(lwr, 26))

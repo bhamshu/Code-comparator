@@ -1,4 +1,4 @@
-def compare(thepath,args):
+def compare(thepath, args):
 	'''takes a directory and a list of files in it and finds points of differences'''
 	f = [None]*len(args)
 	for i in range(len(args)):
@@ -9,20 +9,30 @@ def compare(thepath,args):
 
 	lengths = [len(i) for i in f]
 	if len(set(lengths)) == 1:
-		print("Good News, the output files all have equal number of files. At least. Phew!")
+		eqlen = True
 	else:
-		print("Well, not all putput files have same number of lines. Please open the text files and see.")
+		eqlen = False
 
 	l = min(lengths)
 	nd = 0 #number of points of difference
+	ls = []
 	for j in range(l):
-		if nd>3:
-			print("At least three points of difference have been reported. First address those please. ")
-			break
 		g = [f[i][j] for i in range(len(args))]
 		if len(set(g))!=1:
 			nd+=1
-			print(f"A point of difference found in sentence {j+1}.")
-		if(nd==0):	 
-			print("Congrats! The outputs are same for all the files. But be cautious, there still might be some testcase out there for which the codes have different outputs.")	
-			print("Often, running it again helps.")
+			ls.append(j)
+
+	return nd, ls, eqlen
+
+
+
+def main():
+	thepath = input("Enter the directory in which the files are located or press Enter if it's current directory: ") or "."
+	ls = [input("Enter the names of the files one by one:\n")]
+	while ls[-1]:
+		ls.append(input())
+	ls = ls[:-1]
+	compare(thepath, ls)
+
+if __name__ == '__main__':
+	main()
