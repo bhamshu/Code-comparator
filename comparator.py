@@ -21,7 +21,7 @@ def compare(thepath, args, sol = None):
 			nd = 0 #number of points of difference
 			ls = []
 			for j in range(l):
-				if i[j]==thesol[j]:
+				if i[j]!=thesol[j]:
 					nd+=1
 					ls.append(j)
 

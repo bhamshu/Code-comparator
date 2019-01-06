@@ -59,7 +59,7 @@ def main():
 			os.system(built+f"temporaryexecutable <{testcases}> \"out{thefile[:-len(lang)]}txt\" "+delet)
 		elif lang == "py":
 			com = "py"
-			print(f"{com} \"{thefile}\" <\"{testcases}\"> \"out{thefile[:-len(lang)]}txt\"")
+			#print(f"{com} \"{thefile}\" <\"{testcases}\"> \"out{thefile[:-len(lang)]}txt\"")
 			os.system(f"{com} \"{thefile}\" <\"{testcases}\"> \"out{thefile[:-len(lang)]}txt\"")
 		elif lang == "java":
 			com = "javac"
